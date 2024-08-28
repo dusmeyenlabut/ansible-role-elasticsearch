@@ -26,7 +26,7 @@ To configure passwordless SSH login, follow these steps:
    ssh root@remote_host
    ```
 
-### Running the Ansible Playbook
+### Running the Ansible Playbook
 Once the prerequisites are set up, you can run the Ansible playbook to set up the Elasticsearch cluster using the following command:
 
    ```bash
