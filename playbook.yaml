@@ -1,0 +1,5 @@
+- name: Set up Elasticsearch cluster
+  hosts: elasticsearch_nodes
+  become: yes
+  roles:
+    - elasticsearch

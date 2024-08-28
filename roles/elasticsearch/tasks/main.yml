@@ -1,0 +1,44 @@
+- name: Remove old Elasticsearch packages
+  apt:
+    name: elasticsearch
+    state: absent
+  become: yes
+  when: es_existing_remove == true
+
+- name: Remove Elasticsearch data and configuration directories
+  file:
+    path: "{{ item }}"
+    state: absent
+    recurse: yes
+  with_items:
+    - /etc/elasticsearch
+    - /usr/share/elasticsearch/logs
+    - /var/log/elasticsearch
+  become: yes
+  ignore_errors: yes
+  when: es_existing_remove == true
+
+- name: Install Java (required for Elasticsearch)
+  apt:
+    name: openjdk-11-jre
+    state: present
+  become: yes
+
+- name: Download and install Elasticsearch
+  apt:
+    deb: https://artifacts.elastic.co/packages/8.x/apt/pool/main/e/elasticsearch/elasticsearch-8.15.0-amd64.deb
+    state: present
+
+- name: Configure Elasticsearch
+  template:
+    src: elasticsearch.yml.j2
+    dest: /etc/elasticsearch/elasticsearch.yml
+    owner: elasticsearch
+    group: elasticsearch
+    mode: '0644'
+
+- name: Enable and start Elasticsearch service
+  systemd:
+    name: elasticsearch
+    enabled: yes
+    state: started
